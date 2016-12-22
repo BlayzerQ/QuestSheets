@@ -3,8 +3,10 @@ package hardcorequesting.quests;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import hardcorequesting.SaveHelper;
+import hardcorequesting.quests.QuestTaskLocation.Location;
 import hardcorequesting.reputation.Reputation;
 import hardcorequesting.reputation.ReputationMarker;
 import net.minecraft.item.ItemStack;
@@ -113,10 +115,12 @@ public class QuestAdapters
         @Override
         public void write(JsonWriter out, QuestTaskItems.ItemRequirement value) throws IOException
         {
-            ItemStack item = value.item;
+            //ItemStack item = value.item;
+        	ItemStack item = value.getItem();
             Fluid fluid = value.fluid;
             int required = value.required;
-            ItemPrecision precision = value.precision;
+            //ItemPrecision precision = value.precision;
+            ItemPrecision precision = value.getPrecision();
             out.beginObject();
             if (item != null)
             {
@@ -133,7 +137,8 @@ public class QuestAdapters
             if (required != 1)
                 out.name(REQUIRED).value(required);
             if (precision != ItemPrecision.PRECISE)
-            out.name(PRECISION).value(precision.name());
+            //out.name(PRECISION).value(precision.name());
+            out.name(PRECISION).value(precision.getName());
             out.endObject();
         }
 
@@ -159,7 +164,8 @@ public class QuestAdapters
                     required = in.nextInt();
                 } else if (next.equalsIgnoreCase(PRECISION))
                 {
-                    ItemPrecision itemPrecision = ItemPrecision.valueOf(in.nextString());
+                    //ItemPrecision itemPrecision = ItemPrecision.valueOf(in.nextString());
+                	ItemPrecision itemPrecision = ItemPrecision.getPrecisionType(in.nextString());
                     if (itemPrecision != null)
                     {
                         precision = itemPrecision;
@@ -178,7 +184,8 @@ public class QuestAdapters
             {
                 return null;
             }
-            result.precision = precision;
+            result.setPrecision(precision);
+            //result.precision = precision;
             return result;
         }
     };
@@ -218,7 +225,8 @@ public class QuestAdapters
         public QuestTaskLocation.Location read(JsonReader in) throws IOException
         {
             in.beginObject();
-            QuestTaskLocation.Location result = ((QuestTaskLocation) TASK).new Location();
+            //QuestTaskLocation.Location result = ((QuestTaskLocation) TASK).new Location();
+            QuestTaskLocation.Location result = new Location();
             while (in.hasNext())
             {
                 String name = in.nextName();
